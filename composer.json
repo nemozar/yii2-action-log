@@ -10,7 +10,7 @@
 	],
 	"minimum-stability": "stable",
 	"require": {
-		"php": ">=5.3.0",
+		"php": ">=5.6.0",
 		"symfony/var-dumper": "*",
 		"kartik-v/yii2-date-range": "v1.6.9",
 		"kartik-v/yii2-widget-select2": "v2.1.3"

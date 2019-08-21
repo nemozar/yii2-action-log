@@ -30,4 +30,15 @@ class LogController extends Controller
         ]);
     }
 
+    public function actionClear($date = false)
+    {
+        if ($date) {
+            $condition = [
+                '<', 'time', $date
+            ];
+        }
+        ActionLogs::deleteAll($condition);
+        $this->redirect(['index']);
+    }
+
 }

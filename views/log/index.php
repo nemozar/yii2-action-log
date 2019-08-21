@@ -1,8 +1,13 @@
 <?php
 
 use kartik\daterange\DateRangePicker;
+use kartik\select2\Select2;
+use nemozar\yii2ActionLog\models\ActionLogs;
+use Symfony\Component\VarDumper\VarDumper;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
 /* @var $searchModel nemozar\yii2ActionLog\models\ActionLogsSearch */
@@ -13,9 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $model = $this->context->module->userModel;
 
-$user_list = \yii\helpers\ArrayHelper::map($model::find()->all(), 'id', $this->context->module->modelUserName);
+$user_list = ArrayHelper::map($model::find()->all(), 'id', $this->context->module->modelUserName);
 echo "<div style='display: none;'>";
-\Symfony\Component\VarDumper\VarDumper::dump(1);
+VarDumper::dump(1);
 echo "</div>";
 
 $filterDate = DateRangePicker::widget([
@@ -52,10 +57,16 @@ $filterDate = DateRangePicker::widget([
 ?>
 <div class="action-logs-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1>
+        <?= Html::encode($this->title) ?>
+        <?= Html::a('Clear logs', Url::to(['clear']), [
+            'class' => 'btn btn-warning',
+            'style' => 'float: right;',
+            'data-confirm' => 'All logs wiil be clear. Continue?'
+        ])?>
+    </h1>
 <!--    --><?php //Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -79,7 +90,7 @@ $filterDate = DateRangePicker::widget([
                 'format' => 'html',
                 'value' => function ($data) {
                     ob_start();
-                    \Symfony\Component\VarDumper\VarDumper::dump(json_decode($data->post_data));
+                    VarDumper::dump(json_decode($data->post_data));
 //                    \yii\helpers\VarDumper::dump(json_decode($data->post_data),  2,  true);
                     $dump = ob_get_contents();
                     ob_end_clean();
@@ -92,7 +103,7 @@ $filterDate = DateRangePicker::widget([
                 'value' => function ($data) use ($user_list){
                     return $user_list[$data->id_user];
                 },
-                'filter' => \kartik\select2\Select2::widget([
+                'filter' => Select2::widget([
                     'model' => $searchModel,
                     'attribute' => 'id_user',
                     'data' => $user_list,
@@ -109,10 +120,10 @@ $filterDate = DateRangePicker::widget([
                 'value' => function ($data) {
                     return $data->controllerName;
                 },
-                'filter' => \kartik\select2\Select2::widget([
+                'filter' => Select2::widget([
                     'model' => $searchModel,
                     'attribute' => 'controller',
-                    'data' => \nemozar\yii2ActionLog\models\ActionLogs::getControllerList(),
+                    'data' => ActionLogs::getControllerList(),
                     'pluginOptions' => [
                         'allowClear' => true,
                     ],
@@ -124,10 +135,10 @@ $filterDate = DateRangePicker::widget([
             ],
             [
                 'attribute' => 'action',
-                'filter' => \kartik\select2\Select2::widget([
+                'filter' => Select2::widget([
                     'model' => $searchModel,
                     'attribute' => 'action',
-                    'data' => \nemozar\yii2ActionLog\models\ActionLogs::getActionList(),
+                    'data' => ActionLogs::getActionList(),
                     'pluginOptions' => [
                         'allowClear' => true,
                     ],
@@ -143,7 +154,7 @@ $filterDate = DateRangePicker::widget([
                     'view' => function ($url, $data) use ($searchModel) {
                         $filter = $searchModel->attributes;
                         $filter['id'] = $data->id;
-                        return Html::a('<i class="glyphicon glyphicon-eye-open"></i>', \yii\helpers\Url::to(['index', 'ActionLogsSearch' => $filter
+                        return Html::a('<i class="glyphicon glyphicon-eye-open"></i>', Url::to(['index', 'ActionLogsSearch' => $filter
                         ]));
                     }
                 ],
