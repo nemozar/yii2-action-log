@@ -14,6 +14,9 @@ $this->params['breadcrumbs'][] = $this->title;
 $model = $this->context->module->userModel;
 
 $user_list = \yii\helpers\ArrayHelper::map($model::find()->all(), 'id', $this->context->module->modelUserName);
+echo "<div style='display: none;'>";
+\Symfony\Component\VarDumper\VarDumper::dump(1);
+echo "</div>";
 
 $filterDate = DateRangePicker::widget([
     'name'=>'ActionLogsSearch[time]',
@@ -46,7 +49,6 @@ $filterDate = DateRangePicker::widget([
         ]
     ]
 ]);
-
 ?>
 <div class="action-logs-index">
 
@@ -58,7 +60,6 @@ $filterDate = DateRangePicker::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
             [
                 'attribute' => 'id',
                 'options' => [
@@ -67,7 +68,10 @@ $filterDate = DateRangePicker::widget([
             ],
             [
                 'attribute' => 'time',
-                'filter' => $filterDate
+                'filter' => $filterDate,
+                'options' => [
+                    'style' => 'width : 300px;'
+                ]
             ],
             'url:ntext',
             [
@@ -75,7 +79,8 @@ $filterDate = DateRangePicker::widget([
                 'format' => 'html',
                 'value' => function ($data) {
                     ob_start();
-                    \yii\helpers\VarDumper::dump(json_decode($data->post_data),  2,  true);
+                    \Symfony\Component\VarDumper\VarDumper::dump(json_decode($data->post_data));
+//                    \yii\helpers\VarDumper::dump(json_decode($data->post_data),  2,  true);
                     $dump = ob_get_contents();
                     ob_end_clean();
                     return $dump;
@@ -149,3 +154,15 @@ $filterDate = DateRangePicker::widget([
     ]); ?>
 <!--    --><?php //Pjax::end(); ?>
 </div>
+<style>
+    pre.sf-dump, pre.sf-dump .sf-dump-default {
+        background: none;
+        color: #000;
+    }
+    pre.sf-dump .sf-dump-public {
+        color:#111;
+    }
+    pre.sf-dump .sf-dump-str {
+        color:#888;
+    }
+</style>

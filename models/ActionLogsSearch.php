@@ -79,7 +79,8 @@ class ActionLogsSearch extends ActionLogs
             ->andFilterWhere(['ilike', 'controller', $this->controller])
             ->andFilterWhere(['ilike', 'action', $this->action])
             ->andFilterWhere(['ilike', 'referer', $this->referer]);
-
+        $query->orderBy('id desc');
+        $query->limit(100);
         return $dataProvider;
     }
 }
